@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>clientTutorialCPP</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/</style>
+
+ <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
+
+</head>
+
+<body>
+
+<div class="head">
+<h1>clientTutorialCPP</h1>
+<h2 class="nocount">2017.11</h2>
+
+<h2 class="nocount">Abstract</h2>
+<p>
+<b>clientTutorialCPP</b> is a tutorial for using <b>pvaClientCPP</b>
+</p>
+<p>
+<b>NOTE:</b>
+This document is mainly for people who want to create client code
+for communicating with servers that can be accessed via the
+<b>EPICS 7</b> channel providers <b>pva</b>
+or <b>ca</b>. 
+</p>
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+<div id="contents" class="contents">	  
+<hr />
+<h2>Overview</h2>
+<p>
+The reader should be familiar with
+<a
+      href="http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html">
+      developerGuide
+</a> 
+</p>
+<p>In particular the reader should be familiar with <b>pvDataCPP</b>, <b>normativeTypesCPP</b>,
+and <b>pvaClientCPP</b>
+</p>
+<p>
+The tutorial examples uses <b>pvaClientCPP</b> rather than <b>pvAccessCPP</b>.
+<b>pvaClient</b> is a wrapper on top of <b>pvAccess</b>.
+<b>pvAccess</b> provides a callback based API, which can be complicated to use.
+<b>pvaClient</b> provides a synchronous interface as well as a symplified callback interface.
+</p>
+<p>
+Suggestions for a first time reader:
+</p>
+<dl>
+   <dt>developerGuide</dt>
+     <dd>
+        Read the overview section.
+     </dd>
+   <dt>Build EPICS 7</dt>
+     <dd>
+       You will need to build a recent C++ release.
+     </dd>
+    <dt>Build pvaClientTutorial</dt>
+    <dd>
+     In the same directory where You built EPICS 7:
+<pre>
+git clone https://github.com/mrkraimer/pvaClientTutorialCPP.git
+cd pvaClientTutorialCPP
+make
+</pre> 
+    </dd>
+  <dt>run examples</dt>
+    <dd>
+     Start running examples.
+     When you do not understand something look at <b>developerGuide</b>
+      and the documentation that comes with <b>pvDataCPP</b>,
+      <b>normativeTypesCPP</b>, and <b>pvaClientCPP</b>.
+    </dd>
+</dl>
+<h2>exampleCPP/database</h2>
+<p>
+In order to run the examples, <b>exampleCPP/database</b> must be built
+and then the IOC database started:
+</p>
+<pre>
+mrk&gt; pwd
+/home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
+mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
+</pre>
+<h2>Blocking Examples</h2>
+<p>These are examples that block while waiting for a channel to connect.
+They are good examples for creating command line or scripting tools.
+</p>
+<p>
+Each example provides help.
+For example:
+</p>
+<pre>
+mrk> bin/linux-x86_64/numericScalar -help
+ -h -p providerName channelNames 
+default
+-p pva PVRdouble
+</pre>
+<h3>numericScalar</h3>
+<p><b>pvaClient</b> provides convenience methods for a value field that is a numeric scalar.
+The convenience methods are <b>getDouble</b> and <b>putDouble</b>.
+This methods work on any top level value field that is a numeric scalar.
+</p>
+<p>
+Look at numericScalar.cpp while executing the following:
+</p>
+<pre>
+mrk> pwd
+/home/epicsv4/masterCPP/pvaClientTutorialCPP
+mrk> bin/linux-x86_64/numericScalar 
+channelName PVRdouble providerName pva
+get double with defaults 1
+get double without defaults 1
+get double long way 2
+mrk> bin/linux-x86_64/numericScalar PVRint
+channelName PVRint providerName pva
+get double with defaults 1
+get double without defaults 1
+get double long way 2
+mrk> bin/linux-x86_64/numericScalar DBRint00
+channelName DBRint00 providerName pva
+get double with defaults 1
+get double without defaults 1
+get double long way 2
+mrk> bin/linux-x86_64/numericScalar -p ca DBRint00
+channelName DBRint00 providerName ca
+get double with defaults 1
+get double without defaults 1
+get double long way 2
+mrk> bin/linux-x86_64/numericScalar PVRstring
+channelName PVRstring providerName pva
+exception PVRstring value is not a compatible scalar
+</pre>
+<h3>stringScalar</h3>
+<p><b>pvaClient</b> provides convenience methods for a value field that is a scalar.
+The convenience methods are <b>getString</b> and <b>putString</b>.
+This methods work on any top level value field that is a scalar.
+</p>
+<p>
+Look at stringScalar.cpp while executing the following:
+</p>
+<pre>
+mrk> bin/linux-x86_64/stringScalar -h
+ -h -p providerName -v value channelNames 
+default
+-p pva -v 10.1 PVRdouble
+mrk> bin/linux-x86_64/stringScalar
+channelName PVRdouble providerName pva
+get string with defaults 10.1
+get string without defaults 10.1
+get string long way 10.1
+mrk> bin/linux-x86_64/stringScalar -v test DBRstring00
+channelName DBRstring00 providerName pva
+get string with defaults test
+get string without defaults test
+get string long way test
+mrk> bin/linux-x86_64/stringScalar -p ca -v test DBRstring00
+channelName DBRstring00 providerName ca
+get string with defaults test
+get string without defaults test
+get string long way test
+mrk> bin/linux-x86_64/stringScalar -v true PVRboolean
+channelName PVRboolean providerName pva
+get string with defaults true
+get string without defaults true
+get string long way true
+mrk> bin/linux-x86_64/stringScalar PVRboolean
+channelName PVRboolean providerName pva
+exception parseToPOD: string no match true/false
+</pre>
+<h3>intScalar</h3>
+<p>This example shows how to connect to a value field that has type <b>pvInt</b>,
+i. e. a field that is a 32 bit integer.
+</p>
+<p>
+Look at intScalar.cpp while executing the following:
+<p>
+<pre>
+mrk > bin/linux-x86_64/intScalar
+channelName PVRint providerName pva
+get int with defaults 1
+get int without defaults 1
+ get int long way 2
+mrk> bin/linux-x86_64/intScalar DBRint00
+channelName DBRint00 providerName pva
+get int with defaults 1
+get int without defaults 1
+ get int long way 2
+mrk> bin/linux-x86_64/intScalar -p ca DBRint00
+channelName DBRint00 providerName ca
+get int with defaults 1
+get int without defaults 1
+ get int long way 2
+mrk> bin/linux-x86_64/intScalar PVRdouble
+channelName PVRdouble providerName pva
+no pvInt value field
+mrk> bin/linux-x86_64/intScalar PVRhelloPutGet
+channelName PVRhelloPutGet providerName pva
+exception channel PVRhelloPutGet PvaClientPut::connect 
+PvaClientPut::channelPutConnect)
+pvRequest
+structure 
+    structure field
+        structure value
+
+error
+invalid pvRequest
+</pre>
+<h3>intScalarNonValue</h3>
+<p>Like <b>intScalar</b> this example shows how to connect to a field that
+has type <b>pvInt</b>, i. e.  a field that is a 32 bit integer.
+But unlike <b>intScalar</b> The field does not have to be a top level field named
+<b>value</b>.
+</p>
+<p>
+Look at intScalarNonValue.cpp while executing the following:
+</p>
+<pre>
+mrk> pvget -r "field()" -i PVRint
+PVRint
+epics:nt/NTScalar:1.0 
+    int value 0
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 1510168230
+        int nanoseconds 268507336
+        int userTag 0
+mrk> bin/linux-x86_64/intScalarNonValue
+channelName PVRint providerName pva request value
+get int 1
+get int again 2
+mrk> pvget -r "timeStamp.userTag" PVRint
+PVRint
+structure 
+    structure timeStamp
+        int userTag 0
+mrk> bin/linux-x86_64/intScalarNonValue -r "timeStamp.userTag" PVRint
+channelName PVRint providerName pva request timeStamp.userTag
+get int 1
+get int again 2
+mrk> pvget -r "timeStamp.userTag" PVRint
+PVRint
+structure 
+    structure timeStamp
+        int userTag 2
+</pre>
+<h3>timeStamp</h3>
+<p>One of the properties defined in <b>pvData</b> is <b>timeStamp</b>.
+This example shows how to use <b>TimeStamp</b> and <b>PVAlarm</b>
+</p>
+<p>
+Look at timeStamp.cpp while executing the following:
+</p>
+<pre>
+mrk> bin/linux-x86_64/timeStamp
+channelName PVRdouble providerName pva
+time 2017.11.08 14:28:29.805478760 userTag 0
+</pre>
+<h3>alarm</h3>
+<p>Another property defined in <b>pvData</b> is <b>alarm</b>.
+This example shows how to use <b>Alarm</b> and <b>PVAlarm</b>
+</p>
+<p>
+Look at alarm.cpp while executing the following:
+</p>
+<pre>
+mrk> bin/linux-x86_64/alarm
+channelName PVRdouble providerName pva
+alarm message "a message" severity NONE status NONE
+mrk> bin/linux-x86_64/alarm
+channelName PVRdouble providerName pva
+alarm message "" severity NONE status NONE
+mrk> pvput -r "alarm.message" PVRdouble '{"alarm.message":"a message"}'
+...
+mrk> bin/linux-x86_64/alarm
+channelName PVRdouble providerName pva
+alarm message "a message" severity NONE status NONE
+</pre>
+<h3>enum</h3>
+<p>Another property defined in <b>pvData</b> is <b>enumerated</b>.
+This example shows how to use <b>PVEnumerated</b>
+</p>
+<p>
+Look at enum.cpp while executing the following:
+</p>
+<pre>
+mrk> bin/linux-x86_64/enum
+channelName PVRenum providerName pva
+get choice with defaults index 0 choice zero
+get choice long way  index 1 choice one
+</pre>
+<h2>Non-Blocking Examples</h2>
+<p>These are examples that never block while waiting for a channel to connect.
+They are good examples for use by display manager tools.
+</p>
+<p>
+Each has an internal class that could be used as a starting point for use by
+a client.
+Each <b>virtual</b> method is a callback.
+Non <b>virtual</b> methods are example specific and called by the main part of the example.
+</p>
+<h3>monitor</h3>
+<p>This is an example of a non-blocking monitor.
+It has the options:
+</p>
+<pre>
+mrk> bin/linux-x86_64/monitor -h
+ -h -p provider -r request channelNames 
+default
+-p pva -r value,alarm,timeStamp PVRdouble
+mrk> 
+</pre>
+An example is:
+<pre>
+mrk> bin/linux-x86_64/monitor PVRdouble PVRdoubleArray PVRstring PVRstringArray
+channelStateChange PVRdouble isConnected false
+channelStateChange PVRdoubleArray isConnected false
+channelStateChange PVRstring isConnected false
+channelStateChange PVRstringArray isConnected false
+channelStateChange PVRdouble isConnected true
+monitorConnect PVRdouble status Status [type=OK]
+monitor 
+changed
+ = structure 
+    double value 0
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message a message
+    time_t timeStamp
+        long secondsPastEpoch 1510169309
+        int nanoseconds 805478760
+        int userTag 0
+
+overrun
+channelStateChange PVRdoubleArray isConnected true
+channelStateChange PVRstring isConnected true
+channelStateChange PVRstringArray isConnected true
+monitorConnect PVRdoubleArray status Status [type=OK]
+monitorConnect PVRstring status Status [type=OK]
+monitorConnect PVRstringArray status Status [type=OK]
+monitor 
+changed
+ = structure 
+    double[] value []
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+
+overrun
+monitor 
+changed
+ = structure 
+    string value 
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+
+overrun
+monitor 
+changed
+ = structure 
+    string[] value []
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+
+overrun
+...
+</pre>
+Leave this running and in another window issue the following:
+<pre>
+mrk> pvput PVRdouble 15.0
+Old : PVRdouble                      0
+New : PVRdouble                      15
+mrk> pvput PVRdoubleArray 5 1 2 3 4 5
+Old : PVRdoubleArray 0
+New : PVRdoubleArray 5 1 2 3 4 5
+mrk> pvput PVRstring "a message"
+Old : PVRstring                      
+New : PVRstring                      a message
+mrk> pvput PVRstringArray  5 one two three four five
+Old : PVRstringArray 0
+New : PVRstringArray 5 one two three four five
+</pre>
+<h3>putNoBlock</h3>
+<h3>getNoBlock</h3>
+
+
+</div> <!-- class="contents" -->
+</body>
+</html>
