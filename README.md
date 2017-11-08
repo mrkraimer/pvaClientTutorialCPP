@@ -24,4 +24,4 @@ It can also be built by:
 Getting Started
 ---------------
 
-After building read documentation/clientTutorial.html.
+After building read documentation/pvaClientTutorialCPP.html.
