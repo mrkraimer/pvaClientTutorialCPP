@@ -144,6 +144,7 @@ public:
                 pos = offset+1;
                 n++;    
             }
+            pvScalarArray->setLength(n);
             convert->fromStringArray(pvScalarArray,0,n,values,0);        
         }
         pvaClientPut->put();
@@ -176,7 +177,7 @@ int main(int argc,char *argv[])
         default :
             break;
         }
-    }    
+    }   
     try {
         vector<string> channelNames;
         vector<ClientPutPtr> clientPuts;
@@ -199,8 +200,12 @@ int main(int argc,char *argv[])
                  break;
             }
             for(int i=0; i<nPvs; ++i) {
-                clientPuts[i]->put(str);
-            }
+                try {
+                   clientPuts[i]->put(str);
+                } catch (std::runtime_error e) {
+                   cerr << "exception " << e.what() << endl;
+                }
+            }  
         }
     } catch (std::runtime_error e) {
             cerr << "exception " << e.what() << endl;

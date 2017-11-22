@@ -104,7 +104,7 @@ public:
     {
         while(monitor->poll()) {
             PvaClientMonitorDataPtr monitorData = monitor->getData();
-            cout << "monitor " << endl;
+            cout << "monitor " << channelName << endl;
             cout << "changed\n";
             monitorData->showChanged(cout);
             cout << "overrun\n";

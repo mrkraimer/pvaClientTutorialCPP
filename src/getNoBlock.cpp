@@ -98,8 +98,7 @@ public:
     }
 
     void get()
-    {
-        
+    {  
         if(!channelConnected) {
             cout << channelName << " channel not connected\n";
             return;
@@ -169,7 +168,11 @@ int main(int argc,char *argv[])
                  break;
             }
             for(int i=0; i<nPvs; ++i) {
-                clientGets[i]->get();
+                try {
+                    clientGets[i]->get();
+                } catch (std::runtime_error e) {
+                   cerr << "exception " << e.what() << endl;
+                }
             }
         }
     } catch (std::runtime_error e) {

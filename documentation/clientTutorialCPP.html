@@ -78,10 +78,20 @@ Suggestions for a first time reader:
      <dd>
        You will need to build a recent C++ release.
      </dd>
+   <dt>Build exampleCPP</dt>
+    <dd>
+     In the same directory where You built EPICS 7:
+<pre>
+cd modules
+git clone https://github.com/epics-base/exampleCPP.git
+cd exampleCPP
+make
+</pre> 
     <dt>Build pvaClientTutorial</dt>
     <dd>
      In the same directory where You built EPICS 7:
 <pre>
+cd modules
 git clone https://github.com/mrkraimer/pvaClientTutorialCPP.git
 cd pvaClientTutorialCPP
 make
@@ -154,6 +164,19 @@ mrk> bin/linux-x86_64/numericScalar PVRstring
 channelName PVRstring providerName pva
 exception PVRstring value is not a compatible scalar
 </pre>
+<p>The following connects to more than one channel:
+</p>
+<pre>
+mrk> bin/linux-x86_64/numericScalar PVRdouble PVRlong
+channelName PVRdouble providerName pva
+get double with defaults 1
+get double without defaults 1
+get double long way 2
+channelName PVRlong providerName pva
+get double with defaults 1
+get double without defaults 1
+get double long way 2
+</pre>
 <h3>stringScalar</h3>
 <p><b>pvaClient</b> provides convenience methods for a value field that is a scalar.
 The convenience methods are <b>getString</b> and <b>putString</b>.
@@ -197,7 +220,7 @@ i. e. a field that is a 32 bit integer.
 </p>
 <p>
 Look at intScalar.cpp while executing the following:
-<p>
+</p>
 <pre>
 mrk > bin/linux-x86_64/intScalar
 channelName PVRint providerName pva
@@ -425,9 +448,187 @@ Old : PVRstringArray 0
 New : PVRstringArray 5 one two three four five
 </pre>
 <h3>putNoBlock</h3>
+<p>This is an example of a non-blocking channelPut.
+It has the options:
+</p>
+<pre>
+mrk> bin/linux-x86_64/putNoBlock -help
+ -h -p provider -r request channelNames 
+default
+-p pva -r value PVRdouble
+</pre>
+<p>
+This example works on any chaannel that has a top level field with the name <b>value</b>
+and has type scalar or scalar array.
+After the example is started then You can enter <b>exit</b> or valid value for the type
+associated with the field <b>value</b>.
+</p>
+<p>
+In order to see the results of the following examples first start:
+</p>
+<pre>
+mrk> pvget -m -r "value,timeStamp" PVRdouble PVRdoubleArray PVRstring PVRstringArray  PVRboolean PVRbooleanArray
+</pre>
+<p>
+The first example is a numeric scalar:
+</p>
+<pre>
+mrk> bin/linux-x86_64/putNoBlock 
+channelName PVRdouble providerName pva
+channelPutConnect PVRdouble status Status [type=OK]
+1.2
+putDone PVRdouble status Status [type=OK]
+10.0
+putDone PVRdouble status Status [type=OK]
+exit
+</pre>
+<p>
+The next example is a scalar string:
+</p>
+<pre>
+mrk> bin/linux-x86_64/putNoBlock PVRstring
+channelName PVRstring providerName pva
+channelPutConnect PVRstring status Status [type=OK]
+test
+putDone PVRstring status Status [type=OK]
+new value
+putDone PVRstring status Status [type=OK]
+exit
+</pre>
+<p>
+The next example is a numeric scalar array:
+</p>
+<pre>
+mrk> bin/linux-x86_64/putNoBlock PVRdoubleArray
+channelName PVRdoubleArray providerName pva
+channelPutConnect PVRdoubleArray status Status [type=OK]
+1 2 3 4 5
+putDone PVRdoubleArray status Status [type=OK]
+10.1 10.2 10.3 10.4 10.5
+putDone PVRdoubleArray status Status [type=OK]
+exit
+mrk> 
+</pre>
+<p>
+The next example is a string scalar array:
+</p>
+<pre>
+mrk> bin/linux-x86_64/putNoBlock PVRstringArray
+channelName PVRstringArray providerName pva
+channelPutConnect PVRstringArray status Status [type=OK]
+a b c d e f
+putDone PVRstringArray status Status [type=OK]
+one two three four five six
+putDone PVRstringArray status Status [type=OK]
+exit
+</pre>
+<p>
+The next example is a boolean scalar:
+</p>
+<pre>
+mrk> bin/linux-x86_64/putNoBlock PVRboolean
+channelName PVRboolean providerName pva
+channelPutConnect PVRboolean status Status [type=OK]
+true
+putDone PVRboolean status Status [type=OK]
+false
+putDone PVRboolean status Status [type=OK]
+exit
+</pre>
+<p>
+The last example is a boolean scalar array:
+</p>
+<pre>
+mrk> bin/linux-x86_64/putNoBlock PVRbooleanArray
+channelName PVRbooleanArray providerName pva
+channelPutConnect PVRbooleanArray status Status [type=OK]
+false true false true true
+putDone PVRbooleanArray status Status [type=OK]
+exit
+</pre>
 <h3>getNoBlock</h3>
+<p>This is an example of a non-blocking channelGet.
+It has the options:
+</p>
+<pre>
+mrk> bin/linux-x86_64/getNoBlock -help
+ -h -p provider -r request channelNames 
+default
+-p pva -r value,alarm,timeStamp PVRdouble
+</pre>
+<p>
+This example gets the defaults:
+</p>
+<pre>
+mrk> bin/linux-x86_64/getNoBlock 
+channelName PVRdouble providerName pva
+channelGetConnect PVRdouble status Status [type=OK]
 
+channelGetDone PVRdouble status Status [type=OK]
+changed PVRdouble
+ = structure 
+    double value 1
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 1511361830
+        int nanoseconds 262291917
+        int userTag 1
 
+bitSet {0}
+channelGetDone PVRdouble status Status [type=OK]
+changed PVRdouble
+value = 2
+timeStamp.secondsPastEpoch = 1511362736
+timeStamp.nanoseconds = 5572772
+bitSet {1, 7, 8}
+exit
+</pre>
+<p>
+The next example gets the value for two channels:
+</p>
+<pre>
+mrk> bin/linux-x86_64/getNoBlock PVRdouble PVRdoubleArray
+channelName PVRdouble providerName pva
+channelName PVRdoubleArray providerName pva
+channelGetConnect PVRdouble status Status [type=OK]
+channelGetConnect PVRdoubleArray status Status [type=OK]
+
+channelGetDone PVRdouble status Status [type=OK]
+changed PVRdouble
+ = structure 
+    double value 2
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 1511362736
+        int nanoseconds 5572772
+        int userTag 1
+
+bitSet {0}
+channelGetDone PVRdoubleArray status Status [type=OK]
+changed PVRdoubleArray
+ = structure 
+    double[] value []
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+
+bitSet {0}
+
+channelGetDone PVRdouble status Status [type=OK]
+channelGetDone PVRdoubleArray status Status [type=OK]
+exit
+</pre>
 </div> <!-- class="contents" -->
 </body>
 </html>
