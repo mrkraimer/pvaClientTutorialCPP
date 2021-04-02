@@ -100,7 +100,7 @@ int main(int argc,char *argv[])
     for(size_t i=0; i<channelNames.size(); ++i) {
         try {
             enumScalar(pva,channelNames[i],providerName);
-        } catch (std::runtime_error e) {
+        } catch (std::exception& e) {
             cerr << "exception " << e.what() << endl;
         }
     }

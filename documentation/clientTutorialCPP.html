@@ -26,6 +26,13 @@
 
 <div class="head">
 <h1>clientTutorialCPP</h1>
+<h2 class="nocount">editions</h2>
+<dl>
+  <dt>2017.03.29</dt>
+     <dd>Original</dd>
+  <dt>2012.04.02</dt>
+     <dd>Update</dd>
+</dl>  
 <h2 class="nocount">2017.11</h2>
 
 <h2 class="nocount">Abstract</h2>
@@ -53,7 +60,7 @@ or <b>ca</b>.
 <p>
 The reader should be familiar with
 <a
-      href="http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html">
+      href="https://mrkraimer.github.io/website/developerGuide/developerGuide.html">
       developerGuide
 </a> 
 </p>
@@ -87,6 +94,7 @@ git clone https://github.com/epics-base/exampleCPP.git
 cd exampleCPP
 make
 </pre> 
+    </dd>
     <dt>Build pvaClientTutorial</dt>
     <dd>
      In the same directory where You built EPICS 7:
@@ -262,18 +270,21 @@ But unlike <b>intScalar</b> The field does not have to be a top level field name
 Look at intScalarNonValue.cpp while executing the following:
 </p>
 <pre>
-mrk> pvget -r "field()" -i PVRint
+mrk> pvinfo PVRint
 PVRint
-epics:nt/NTScalar:1.0 
-    int value 0
-    alarm_t alarm
-        int severity 0
-        int status 0
-        string message 
-    time_t timeStamp
-        long secondsPastEpoch 1510168230
-        int nanoseconds 268507336
-        int userTag 0
+Server: 10.0.0.194:5075
+Type:
+    epics:nt/NTScalar:1.0
+        int value
+        alarm_t alarm
+            int severity
+            int status
+            string message
+        time_t timeStamp
+            long secondsPastEpoch
+            int nanoseconds
+            int userTag
+
 mrk> bin/linux-x86_64/intScalarNonValue
 channelName PVRint providerName pva request value
 get int 1
@@ -315,7 +326,7 @@ Look at alarm.cpp while executing the following:
 <pre>
 mrk> bin/linux-x86_64/alarm
 channelName PVRdouble providerName pva
-alarm message "a message" severity NONE status NONE
+alarm message "" severity NONE status NONE
 mrk> bin/linux-x86_64/alarm
 channelName PVRdouble providerName pva
 alarm message "" severity NONE status NONE
@@ -434,18 +445,22 @@ overrun
 </pre>
 Leave this running and in another window issue the following:
 <pre>
-mrk> pvput PVRdouble 15.0
-Old : PVRdouble                      0
-New : PVRdouble                      15
-mrk> pvput PVRdoubleArray 5 1 2 3 4 5
-Old : PVRdoubleArray 0
-New : PVRdoubleArray 5 1 2 3 4 5
-mrk> pvput PVRstring "a message"
-Old : PVRstring                      
-New : PVRstring                      a message
-mrk> pvput PVRstringArray  5 one two three four five
-Old : PVRstringArray 0
-New : PVRstringArray 5 one two three four five
+mrk> pvput -r value PVRdouble 15.0
+Old : 0
+New : 15 
+
+mrk> pvput -r value PVRdoubleArray [1,2,3,4,5]
+Old : []
+New : [1,2,3,4,5]
+
+mrk> pvput -r value PVRstring "a message"
+Old :  
+New : "a message" 
+
+mrk> pvput -r value PVRstringArray  [one,two,three,four,five]
+Old : []
+New : [one, two, three, four, five]
+
 </pre>
 <h3>putNoBlock</h3>
 <p>This is an example of a non-blocking channelPut.

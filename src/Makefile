@@ -3,60 +3,61 @@ TOP=..
 include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
+EPICS_BASE_PVA_CORE_LIBS = pvaClient pvAccess pvData Com
 
 PROD_HOST += numericScalar
 numericScalar_SRCS += numericScalar.cpp
-numericScalar_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+numericScalar_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += alarm
 alarm_SRCS += alarm.cpp
-alarm_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+alarm_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += timeStamp
 timeStamp_SRCS += timeStamp.cpp
-timeStamp_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+timeStamp_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += stringScalar
 stringScalar_SRCS += stringScalar.cpp
-stringScalar_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+stringScalar_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += intScalar
 intScalar_SRCS += intScalar.cpp
-intScalar_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+intScalar_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += enum
 enum_SRCS += enum.cpp
-enum_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+enum_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += doubleArray
 doubleArray_SRCS += doubleArray.cpp
-doubleArray_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+doubleArray_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += intArray
 intArray_SRCS += intArray.cpp
-intArray_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+intArray_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += stringArray
 stringArray_SRCS += stringArray.cpp
-stringArray_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+stringArray_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += intScalarNonValue
 intScalarNonValue_SRCS += intScalarNonValue.cpp
-intScalarNonValue_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+intScalarNonValue_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += monitor
 monitor_SRCS += monitor.cpp
-monitor_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+monitor_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += getNoBlock
 getNoBlock_SRCS += getNoBlock.cpp
-getNoBlock_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+getNoBlock_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += putNoBlock
 putNoBlock_SRCS += putNoBlock.cpp
-putNoBlock_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+putNoBlock_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
-
+PROD_SYS_LIBS_WIN32 += ws2_32
 
 
 #===========================
